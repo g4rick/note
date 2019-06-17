@@ -44,7 +44,13 @@ set showcmd
 set autoindent " 换行后自动缩进
 set smartindent " 智能对齐
 
-set autoread " 文件在外部被修改后 自动重新读取
+" 这个在gvim中会自动触发，但是vim中需要一些触发条件，所以调用:checktime是不错的办法
+" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+set autoread " 文件在外部被修改后 自动重新读取 
+" 在vim获取焦点或者进入buffer的时候触发checktime
+" 需要下面的插件支持聚焦这个功能,经过尝试插件无效
+au CursorHold,CursorHoldI,FocusGained,BufEnter * :checktime
+
 set nocompatible " 不使用compatible模式 
 set backspace=indent,eol,start
 set ruler
@@ -110,16 +116,23 @@ inoremap <C><CR> <CR><C-o>==<C-o>O
 " Use vim-plug https://github.com/junegunn/vim-plug
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'      " 导航栏插件
+Plug 'Xuyuanp/nerdtree-git-plugin' " 导航栏增加git 状态
 Plug 'scrooloose/nerdcommenter' " 注释插件
 Plug 'https://github.com/pangloss/vim-javascript.git'   " JS plugin
 Plug 'https://github.com/mxw/vim-jsx', { 'for': ['javascript.jsx', 'jsx', 'js'] }   " JSX
 Plug 'mattn/emmet-vim', { 'for': ['javascript.jsx', 'html', 'css'] } " emmet
-" Plug 'terryma/vim-multiple-cursors' " 多行编辑 在iterm上不好用 会卡死
-" macvim可以
+" 多行编辑 在iterm上不好用 会卡死 macvim 可以
+" Plug 'terryma/vim-multiple-cursors' 
 Plug 'Yggdroot/indentLine' " 显示代码缩进
+Plug 'MarcWeber/vim-addon-mw-utils' " snipmate 依赖库
+Plug 'tomtom/tlib_vim' " snipmate 的依赖库
+Plug 'garbas/vim-snipmate' " 代码片段
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'ctrlpvim/ctrlp.vim' " 改版的ctrlp
+Plug 'airblade/vim-gitgutter' " 开发中展示git的一些状态
+" Plug 'ctrlpvim/ctrlp.vim' " 改版的ctrlp
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim' " 代替ctrlp
 Plug 'w0rp/ale'  " 新的语法检查工具
 Plug 'Valloric/YouCompleteMe' " 自动补全插件
 Plug 'jiangmiao/auto-pairs' " 自动补全括号
@@ -133,6 +146,8 @@ call plug#end()
 filetype plugin indent on
 " js中也用jsx
 let g:jsx_ext_required = 0
+
+
 
 " indentLine 配置
 let g:indentLine_char_list = ['|', '¦', '┆', '┊'] " 安层级使用不同的组
@@ -201,7 +216,7 @@ let NERDTreeShowHidden=1 " 显示隐藏文件
 let NERDTreeWinPos="left"
 " 在终端启动vim时，共享NERDTree
 let g:nerdtree_tabs_open_on_console_startup=1
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif   " 自动关闭导航栏
+" autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif   " 自动关闭导航栏
 nmap <leader>kb :NERDTreeToggle<CR>
 
 " airline
@@ -227,20 +242,24 @@ nmap sp <Plug>(ale_previous_wrap)
 nmap sn <Plug>(ale_next_wrap)
 
 
-" ctrlp
-let g:ctrlp_cmd = 'CtrlP'
-map <leader>f :CtrlPMRU<CR>
-map <leader>p :CtrlP<CR>
-let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
-    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
-    \ }
-let g:ctrlp_working_path_mode=0
-let g:ctrlp_match_window_bottom=1
-let g:ctrlp_max_height=15
-let g:ctrlp_match_window_reversed=0
-let g:ctrlp_mruf_max=500
-let g:ctrlp_follow_symlinks=1
+" ctrlp 使用 fzf 代替了
+" let g:ctrlp_cmd = 'CtrlP'
+" map <leader>f :CtrlPMRU<CR>
+" map <leader>p :CtrlPMixed<CR>
+" let g:ctrlp_custom_ignore = {
+    " \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
+    " \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
+    " \ }
+" let g:ctrlp_working_path_mode=0
+" let g:ctrlp_match_window_bottom=1
+" let g:ctrlp_max_height=15
+" let g:ctrlp_match_window_reversed=0
+" let g:ctrlp_mruf_max=500
+" let g:ctrlp_follow_symlinks=1
+
+" fzf 配置
+nmap <C-p> :Files<CR>
+nmap <C-g> :GFiles<CR>
 
 " 注释插件配置
 let g:NERDSpaceDelims = 1 " 注释后自动添加空行
