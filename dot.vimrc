@@ -260,6 +260,7 @@ nmap sn <Plug>(ale_next_wrap)
 " fzf 配置
 nmap <C-p> :Files<CR>
 nmap <C-g> :GFiles<CR>
+nmap <silent><leader>h :History<CR>
 
 " 注释插件配置
 let g:NERDSpaceDelims = 1 " 注释后自动添加空行
