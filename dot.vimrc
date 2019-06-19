@@ -1,5 +1,16 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader="\<space>"
 
+" Enable filetype plugins
+filetype plugin on
+filetype indent on
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Moving around, tabs, windows and buffers
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 切换窗口
 nnoremap <leader>1 :exec "1wincmd w"<CR>
 nnoremap <leader>2 :exec "2wincmd w"<CR>
@@ -11,6 +22,11 @@ nnoremap <leader>7 :exec "7wincmd w"<CR>
 nnoremap <leader>8 :exec "8wincmd w"<CR>
 nnoremap <leader>9 :exec "9wincmd w"<CR>
 
+" Height of the command bar
+set cmdheight=2
+
+" A buffer becomes hidden when it is abandoned
+set hid
 " 切换buffers
 nnoremap <leader>bb :buffers<cr>:b<space>
 " 下一个缓冲区
@@ -18,6 +34,10 @@ nnoremap <tab> :bn<cr>
 nnoremap <S-tab> :bp<cr>
 " 关闭缓冲区
 nnoremap <leader>bq :bp<bar>sp<bar>bn<bar>bd<CR>
+
+" Return to last edit position when opening files (You want this!)
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
 
 " 重载rc文件
 nnoremap <leader>sv :exec "source $MYVIMRC"<CR>
@@ -31,6 +51,9 @@ set t_Co=256     "终端开启256色支持"
 imap jk <ESC>
 
 colorscheme  sublimemonokai
+
+" Sets how many lines of history VIM has to remember
+set history=500
 
 set guifont=Source\ Code\ Pro\ Light:14 " 设置字体和大小
 set linespace=5
@@ -52,9 +75,56 @@ set autoread " 文件在外部被修改后 自动重新读取
 au CursorHold,CursorHoldI,FocusGained,BufEnter * :checktime
 
 set nocompatible " 不使用compatible模式 
-set backspace=indent,eol,start
+
+" Turn on the Wild menu
+set wildmenu
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\*
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+endif
+
+" Configure backspace so it acts as it should act
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+"Always show current position
 set ruler
+" 相对行号
+" set relativenumber
+
+" Ignore case when searching
+set ignorecase
+
+" When searching try to be smart about cases
+set smartcase
+
+" Highlight search results
 set hlsearch
+
+" Makes search act like search in modern browsers
+set incsearch
+
+" Don't redraw while executing macros (good performance config)
+set lazyredraw
+
+" For regular expressions turn magic on
+set magic
+
+" Show matching brackets when text indicator is over them
+set showmatch 
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
 "set foldmethod=syntax   " 基于语法进行折叠
 set foldmethod=indent   " 基于缩进进行折叠
 "set foldmethod=manual   " 手动建立折叠
@@ -72,8 +142,45 @@ if $TERM_PROGRAM =~ "iTerm"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7" " Block in normal mode
 endif
 
-" 状态行显示
-set laststatus=2        " 总是显示状态行
+
+""""""""""""""""""""""""""""""
+" => Status line
+""""""""""""""""""""""""""""""
+" Always show the status line
+set laststatus=2
+
+" Format the status line
+set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Editing mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Remap VIM 0 to first non-blank character
+map 0 ^
+
+" Delete trailing white space on save, useful for some filetypes ;)
+fun! CleanExtraSpaces()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfun
+
+if has("autocmd")
+    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+endif
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Files, backups and undo
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Turn backup off, since most stuff is in SVN, git et.c anyway...
+set nobackup
+set nowb
+set noswapfile  " 不允许产生临时文件
 
 
 set expandtab " 表示tab自动换成空格
@@ -113,6 +220,19 @@ inoremap <expr> <CR> Expander()
 " 原来的回车 map 到 <C> 回车
 inoremap <C><CR> <CR><C-o>==<C-o>O
 
+
+""""""""""""""""""""""""""""""
+" => Visual mode related
+""""""""""""""""""""""""""""""
+" Visual mode pressing * or # searches for the current selection
+" Super useful! From an idea by Michael Naumann
+vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+
+
+""""""""""""""""""""""""""""""
+" => Plug
+""""""""""""""""""""""""""""""
 " Use vim-plug https://github.com/junegunn/vim-plug
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'      " 导航栏插件
@@ -141,7 +261,6 @@ Plug 'prettier/vim-prettier', {
   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
 Plug 'elixir-editors/vim-elixir' " elixir
 call plug#end()
-filetype plugin indent on
 " js中也用jsx
 let g:jsx_ext_required = 0
 
@@ -257,3 +376,14 @@ let g:NERDTrimTrailingWhitespace = 1 " 去掉注释的时候去掉尾部空格
 
 " vim-javascript 配置
 let g:javascript_plugin_jsdoc = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Helper functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Returns true if paste mode is enabled
+function! HasPaste()
+    if &paste
+        return 'PASTE MODE  '
+    endif
+    return ''
+endfunction
