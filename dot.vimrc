@@ -124,13 +124,11 @@ Plug 'mattn/emmet-vim', { 'for': ['javascript.jsx', 'html', 'css'] } " emmet
 " 多行编辑 在iterm上不好用 会卡死 macvim 可以
 " Plug 'terryma/vim-multiple-cursors' 
 Plug 'Yggdroot/indentLine' " 显示代码缩进
-Plug 'MarcWeber/vim-addon-mw-utils' " snipmate 依赖库
-Plug 'tomtom/tlib_vim' " snipmate 的依赖库
-Plug 'garbas/vim-snipmate' " 代码片段
+Plug 'SirVer/ultisnips' " 代码片段引擎
+Plug 'honza/vim-snippets' " 代码片段
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter' " 开发中展示git的一些状态
-" Plug 'ctrlpvim/ctrlp.vim' " 改版的ctrlp
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim' " 代替ctrlp
 Plug 'w0rp/ale'  " 新的语法检查工具
@@ -147,6 +145,10 @@ filetype plugin indent on
 " js中也用jsx
 let g:jsx_ext_required = 0
 
+" snip 配置
+let g:UltiSnipsExpandTrigger="<c-e>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 
 " indentLine 配置
@@ -179,7 +181,9 @@ let g:ycm_filetype_whitelist = {
 \ "js": 1,
 \ "css": 1,
 \ "scss": 1,
-\ "less": 1
+\ "less": 1,
+\ "ex": 1,
+\ "exs": 1
 \ }
 " css 和 scss 中 如果是开头，并且有多个空格 或者 是: 则触发补全
 " html 结尾标签触发补全
@@ -240,22 +244,6 @@ let g:ale_fixers = {
 "普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
 nmap sp <Plug>(ale_previous_wrap)
 nmap sn <Plug>(ale_next_wrap)
-
-
-" ctrlp 使用 fzf 代替了
-" let g:ctrlp_cmd = 'CtrlP'
-" map <leader>f :CtrlPMRU<CR>
-" map <leader>p :CtrlPMixed<CR>
-" let g:ctrlp_custom_ignore = {
-    " \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
-    " \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
-    " \ }
-" let g:ctrlp_working_path_mode=0
-" let g:ctrlp_match_window_bottom=1
-" let g:ctrlp_max_height=15
-" let g:ctrlp_match_window_reversed=0
-" let g:ctrlp_mruf_max=500
-" let g:ctrlp_follow_symlinks=1
 
 " fzf 配置
 nmap <C-p> :Files<CR>
