@@ -108,6 +108,8 @@ set hlsearch
 " Makes search act like search in modern browsers
 set incsearch
 
+nmap <leader>nh :noh<CR>
+
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
 
