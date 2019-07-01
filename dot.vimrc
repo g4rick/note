@@ -242,6 +242,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin' " 导航栏增加git 状态
 Plug 'scrooloose/nerdcommenter' " 注释插件
 Plug 'https://github.com/pangloss/vim-javascript.git'   " JS plugin
 Plug 'https://github.com/mxw/vim-jsx', { 'for': ['javascript.jsx', 'jsx', 'js'] }   " JSX
+Plug 'heavenshell/vim-jsdoc' " jsdoc
 Plug 'mattn/emmet-vim', { 'for': ['javascript.jsx', 'html', 'css'] } " emmet
 " 多行编辑 在iterm上不好用 会卡死 macvim 可以
 " Plug 'terryma/vim-multiple-cursors' 
@@ -261,7 +262,10 @@ Plug 'dyng/ctrlsf.vim' " 全局搜索插件，需要安装ag
 Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install',
   \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'yaml', 'html'] }
-Plug 'elixir-editors/vim-elixir' " elixir
+Plug 'elixir-editors/vim-elixir', { 'for': ['elixir', 'eelixir'] } " elixir
+Plug 'slashmili/alchemist.vim', { 'for': ['elixir', 'eelixir'] } " elixir
+Plug 'godlygeek/tabular' " markdown 插件依赖
+Plug 'plasticboy/vim-markdown' 
 call plug#end()
 " js中也用jsx
 let g:jsx_ext_required = 0
@@ -303,8 +307,7 @@ let g:ycm_filetype_whitelist = {
 \ "css": 1,
 \ "scss": 1,
 \ "less": 1,
-\ "ex": 1,
-\ "exs": 1
+\ "elixir": 1
 \ }
 " css 和 scss 中 如果是开头，并且有多个空格 或者 是: 则触发补全
 " html 结尾标签触发补全
@@ -314,8 +317,12 @@ let g:ycm_semantic_triggers = {
 \   'html': [ '</' ]
 \ }
 
-" 全局搜索
+" 全局搜索 ctrlsf 配置
 nmap <leader><C-F> <Plug>CtrlSFPrompt
+" 自动聚焦搜索结果窗口
+let g:ctrlsf_auto_focus = {
+    \ "at": "start"
+    \ }
 
 " emmet-vim {{{3
 let g:user_emmet_leader_key='<C-E>'
@@ -389,3 +396,4 @@ function! HasPaste()
     endif
     return ''
 endfunction
+
