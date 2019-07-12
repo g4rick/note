@@ -144,6 +144,8 @@ if $TERM_PROGRAM =~ "iTerm"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7" " Block in normal mode
 endif
 
+" 显示空白字符
+set listchars=tab:>-,trail:~,extends:>,precedes:<
 
 """"""""""""""""""""""""""""""
 " => Status line
