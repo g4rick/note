@@ -268,6 +268,8 @@ Plug 'elixir-editors/vim-elixir', { 'for': ['elixir', 'eelixir'] } " elixir
 Plug 'slashmili/alchemist.vim', { 'for': ['elixir', 'eelixir'] } " elixir
 Plug 'godlygeek/tabular' " markdown 插件依赖
 Plug 'plasticboy/vim-markdown' 
+Plug 'leafgarland/typescript-vim'
+Plug 'HerringtonDarkholme/yats.vim' " 另一个typescript 高亮
 call plug#end()
 " js中也用jsx
 let g:jsx_ext_required = 0
@@ -309,7 +311,9 @@ let g:ycm_filetype_whitelist = {
 \ "css": 1,
 \ "scss": 1,
 \ "less": 1,
-\ "elixir": 1
+\ "elixir": 1,
+\ "typescript.tsx": 1,
+\ "typescript.ts": 1
 \ }
 " css 和 scss 中 如果是开头，并且有多个空格 或者 是: 则触发补全
 " html 结尾标签触发补全
@@ -335,6 +339,9 @@ let g:user_emmet_settings = {
   \   'javascript.jsx' : {
   \      'extends': 'jsx',
   \      'quote_char': "'",
+  \  },
+  \   'typescript.tsx' : {
+  \     'extends' : 'jsx',
   \  }
   \}
 " }}3
